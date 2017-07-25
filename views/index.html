@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,6 +18,7 @@
   <script src="scripts/app.js"></script>
 
 </head>
+
 <body>
   <div class="container">
     <h1 class="text-center">Books App</h1>
@@ -39,8 +41,7 @@
             {{#each books}}
             <hr>
             <p>
-              <b>{{title}}</b>
-              by {{author}}
+              <b>{{title}}</b> by {{author.name}}
               <button type="button" name="button" class="deleteBtn btn btn-danger pull-right" data-id={{_id}}>Delete</button>
             </p>
             {{/each}}
@@ -50,4 +51,5 @@
     </div>
   </div>
 </body>
+
 </html>
