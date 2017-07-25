@@ -17,42 +17,11 @@ var app = express();
 app.use(express.static('public'));
 
 // body parser config to accept our datatypes
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
-
-
-////////////////////
-//  DATA
-///////////////////
-
-var books = [
-  {
-    _id: 15,
-    title: "The Four Hour Workweek",
-    author: "Tim Ferriss",
-    image: "https://s3-us-west-2.amazonaws.com/sandboxapi/four_hour_work_week.jpg",
-    release_date: "April 1, 2007"
-  },
-  {
-    _id: 16,
-    title: "Of Mice and Men",
-    author: "John Steinbeck",
-    image: "https://s3-us-west-2.amazonaws.com/sandboxapi/of_mice_and_men.jpg",
-    release_date: "Unknown 1937"
-  },
-  {
-    _id: 17,
-    title: "Romeo and Juliet",
-    author: "William Shakespeare",
-    image: "https://s3-us-west-2.amazonaws.com/sandboxapi/romeo_and_juliet.jpg",
-    release_date: "Unknown 1597"
-  }
-];
-
-
-
-
-
+var db = require('./models');
 
 
 ////////////////////
@@ -63,22 +32,29 @@ var books = [
 
 
 // define a root route: localhost:3000/
-app.get('/', function (req, res) {
-  res.sendFile('views/index.html' , { root : __dirname});
+app.get('/', function(req, res) {
+  res.sendFile('views/index.html', {
+    root: __dirname
+  });
 });
 
 // get all books
-app.get('/api/books', function (req, res) {
+app.get('/api/books', function(req, res) {
   // send all books as JSON response
-  console.log('books index');
-  res.json(books);
+  // get books from DB, then send all books as a JSON repsone
+  db.Book.find(function(err, books) {
+    if (err) {
+      return console.log("index error: " + err);
+    }
+    res.json(books);
+  });
 });
 
 // get one book
-app.get('/api/books/:id', function (req, res) {
+app.get('/api/books/:id', function(req, res) {
   // find one book by its id
   console.log('books show', req.params);
-  for(var i=0; i < books.length; i++) {
+  for (var i = 0; i < books.length; i++) {
     if (books[i]._id === req.params.id) {
       res.json(books[i]);
       break; // we found the right book, we can stop searching
@@ -87,7 +63,7 @@ app.get('/api/books/:id', function (req, res) {
 });
 
 // create new book
-app.post('/api/books', function (req, res) {
+app.post('/api/books', function(req, res) {
   // create new book with form data (`req.body`)
   console.log('books create', req.body);
   var newBook = req.body;
@@ -99,7 +75,7 @@ app.post('/api/books', function (req, res) {
 // app.put('/api/books/:id', controllers.books.update);
 
 // delete book
-app.delete('/api/books/:id', function (req, res) {
+app.delete('/api/books/:id', function(req, res) {
   // get book id from url params (`req.params`)
   console.log('books delete', req.params);
   var bookId = req.params.id;
@@ -117,6 +93,6 @@ app.delete('/api/books/:id', function (req, res) {
 
 
 
-app.listen(process.env.PORT || 3000, function () {
+app.listen(process.env.PORT || 3000, function() {
   console.log('Example app listening at http://localhost:3000/');
 });
